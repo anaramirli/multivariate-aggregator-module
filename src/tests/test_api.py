@@ -8,7 +8,7 @@ client = TestClient(main.app)
 
 
 def test_multivariate_lstm_train():
-    """Tests for of explaining feature importance."""
+
     response = client.post(
         '/multivariate-lstm-train',
         json={
@@ -22,8 +22,8 @@ def test_multivariate_lstm_train():
 			}
 		  },
 		  "paths": {
-			"model_path": "../trained models/lstm/model",
-			"scaler_path": "../trained models/lstm/scaler/scaler.gz"
+			"model": "../trained models/lstm/model",
+			"scaler": "../trained models/lstm/scaler/scaler.gz"
 		  },
 		  "activation": "relu",
 		  "optimizer": "adam",
@@ -37,11 +37,12 @@ def test_multivariate_lstm_train():
     )
 
     assert response.status_code == 200
+    assert response.json() == {"dump_status": "model is saved successfully"}
 
 
 
 def test_aggregate_multivariate_lstm_score():
-    """Tests for of explaining feature importance."""
+   
     response = client.post(
         '/aggregate-multivariate-lstm-score',
         json= {
@@ -55,83 +56,140 @@ def test_aggregate_multivariate_lstm_score():
 			}
           },
           "paths": {
-            "model_path": "../trained models/lstm/model",
-            "scaler_path": "../trained models/lstm/scaler/scaler.gz"
+            "model": "../trained models/lstm/model",
+            "scaler": "../trained models/lstm/scaler/scaler.gz"
           }
         }     
     )
 
     assert response.status_code == 200
+    
+    
+    
+def test_best_multivariate_var_order():
+    
+    response = client.post(
+        '/best-multivariate-var-order',
+        json= {
+          "train_data": {
+            "data": {
+            "A1": [581.8548, 593.3871, 606.7692, 617.4495, 607.2034, 611.0798, 608.6863, 612.1547, 616.4299, 613.6036, 612.7401],
+            "A2": [650.3324, 653.4324, 656.5324, 660.4851, 664.025 , 667.125 , 670.225 , 673.325 , 675.7723, 678.1468, 670.2468],
+            "A3": [636.0783, 639.2783, 642.4783, 645.6783, 648.8783, 652.0783, 655.8941, 659.2941, 662.6941, 666.0941, 657.4941],
+            "A4": [ 71.5995,  75.4052,  78.4239,  81.2488,  84.4223,  87.5223, 90.167 ,  94.0031,  96.5254,  99.9436,  91.7232],
+            "A5": [ 37.1851,  40.703 ,  43.803 ,  46.7039,  49.8039,  52.9039, 55.7653,  59.2997,  62.0945,  65.3581,  57.2736]
+            }
+          },
+          "low_order": 1,
+          "high_order": 5
+        }     
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+		  "best_order": 3
+		}
+    
+    
+def test_train_multivariate_var():
+    
+    response = client.post(
+        '/train-multivariate-var',
+        json= {
+          "train_data": {
+            "data": {
+            "A1": [581.8548, 593.3871, 606.7692, 617.4495, 607.2034, 611.0798, 608.6863, 612.1547, 616.4299, 613.6036, 612.7401],
+            "A2": [650.3324, 653.4324, 656.5324, 660.4851, 664.025 , 667.125 , 670.225 , 673.325 , 675.7723, 678.1468, 670.2468],
+            "A3": [636.0783, 639.2783, 642.4783, 645.6783, 648.8783, 652.0783, 655.8941, 659.2941, 662.6941, 666.0941, 657.4941],
+            "A4": [ 71.5995,  75.4052,  78.4239,  81.2488,  84.4223,  87.5223, 90.167 ,  94.0031,  96.5254,  99.9436,  91.7232],
+            "A5": [ 37.1851,  40.703 ,  43.803 ,  46.7039,  49.8039,  52.9039, 55.7653,  59.2997,  62.0945,  65.3581,  57.2736]
+            }
+          },
+            
+          "paths": {
+            "model": "../trained models/var/var_result.joblib",
+            "scaler": ""
+          },
+          "order": 3
+        }
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+			"dump_status": "model is saved successfully",
+			"UCL": 370.6116859955349
+		}
+		
+def test_aggregate_multivariate_var():
+   
+    response = client.post(
+        '/aggregate-multivariate-var',
+        json= {
+		  "test_data": {
+			"data": {
+			"A1": [594.1389, 603.7225, 592.7108, 586.646 , 581.9071, 594.399, 603.805 , 610.3627, 594.4159, 585.8747, 593.4889],
+			"A2": [660.7306, 661.7306, 662.7306, 663.172, 649.172, 649.172, 649.7999, 649.7999, 649.7999, 650.5692, 651.0472],
+			"A3": [648.6941, 649.8941, 651.0941, 652.2941, 636.4941, 636.4941, 636.4941, 636.4941, 636.4941, 636.4941, 636.4941],
+			"A4": [82.9601,  83.9601,  85.2628,  86.1015,  72.6354,  72.267, 72.6729,  71.5571,  71.9891,  72.7238,  73.0851],
+			"A5": [48.4208,  49.4208,  50.5938,  51.4909,  37.7824,  37.5984, 37.8305,  37.1935,  37.4089,  37.8443,  38.0595]
+			}
+		  },
+		  "paths": {
+			"model": "../trained models/var/var_result.joblib",
+			"scaler": ""
+		  },
+		  "order": 3
+		}
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+          "out": [
+            3.5167876260029486e+28,
+            3.192017532950293e+28,
+            7.837936344944434e+28,
+            2.4636610520425816e+29,
+            1.663637488961949e+28,
+            1.558962186880391e+28,
+            2.952890424647399e+28,
+            2.5090219198833513e+28
+          ]
+        }
+    
+    
+def test_aggregate_multivariate_pca():
+   
+    response = client.post(
+        '/aggregate-multivariate-pca',
+        json= {
+		  "test_data": {
+			"data": {
+			"A1": [594.1389, 603.7225, 592.7108, 586.646 , 581.9071, 594.399, 603.805 , 610.3627, 594.4159, 585.8747, 593.4889],
+			"A2": [660.7306, 661.7306, 662.7306, 663.172, 649.172, 649.172, 649.7999, 649.7999, 649.7999, 650.5692, 651.0472],
+			"A3": [648.6941, 649.8941, 651.0941, 652.2941, 636.4941, 636.4941, 636.4941, 636.4941, 636.4941, 636.4941, 636.4941],
+			"A4": [82.9601,  83.9601,  85.2628,  86.1015,  72.6354,  72.267, 72.6729,  71.5571,  71.9891,  72.7238,  73.0851],
+			"A5": [48.4208,  49.4208,  50.5938,  51.4909,  37.7824,  37.5984, 37.8305,  37.1935,  37.4089,  37.8443,  38.0595]
+			}
+		  },
+		  "principal_component": 1
+		} 
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+          "out": [
+            0.435516844700798,
+            107.34623817837938,
+            0.1723554997465683,
+            39.66345760703956,
+            184.60554329889254,
+            1.683081091641335,
+            68.56331068453335,
+            217.45358186059062,
+            1.3691178317147221,
+            91.41066434297306,
+            4.4618440730474624
+          ]
+        }
 
 
-# def test_aggregate_multivariate_lstm():
-#     """Tests aggregattion of Multivariate data as reconstruction error of lstm."""
-#     response = client.post(
-#         '/aggregate-multivariate-lstm',
-#         json={
-
-
-
-
-#             'parameters': {
-#                 'num_features': 32,
-#                 'num_split': 3000
-#             }
-#         }
-#     )
-#     assert response.status_code == 200
-#     assert response.json() == {
-#         'univariate_time_series': {
-
-#         }
-#     }
-
-
-# def test_aggregate_multivariate_var():
-#     """Tests aggregattion of Multivariate data as reconstruction error of var."""
-#     response = client.post(
-#         '/aggregate-multivariate-var',
-#         json={
-#             'train_data': {
-
-#             },
-#             'score_data': {
-
-#             },
-#             'parameters': {
-#                 'num_features': 32,
-#                 'num_split': 3000
-#             }
-#         }
-#     )
-#     assert response.status_code == 200
-#     assert response.json() == {
-#         'univariate_time_series': {
-
-#         }
-#     }
-
-
-# def test_aggregate_multivariate_pca():
-#     """Tests aggregattion of Multivariate data as reconstruction error of pca."""
-#     response = client.post(
-#         '/aggregate-multivariate-pca',
-#         json={
-#             'train_data': {
-
-#             },
-#             'score_data': {
-
-#             },
-#             'parameters': {
-#                 'num_features': 32,
-#                 'num_split': 3000
-#             }
-#         }
-#     )
-#     assert response.status_code == 200
-#     assert response.json() == {
-#         'univariate_time_series': {
-
-#         }
-#     }
