@@ -7,7 +7,7 @@ $ docker build . -t multivariate-aggregator
 
 ## Run
 ```sh
-$ docker run -p 8080:8080 -v mydata:/app multivariate-aggregator
+$ docker run -p 8080:8080 -v keras-lstm:/app multivariate-aggregator
 ```
 
 ## Documentation
