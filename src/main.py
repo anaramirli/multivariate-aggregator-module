@@ -1,6 +1,6 @@
 """Multivariate Aggregator module."""
 
-__version__ = '0.0.3'
+__version__ = '1.0.0'
 
 from typing import Dict, List
 from fastapi import FastAPI
