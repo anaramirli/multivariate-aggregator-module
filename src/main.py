@@ -21,6 +21,7 @@ import joblib
 import time
 import numpy as np
 import pandas as pd
+import os
 
 
 app = FastAPI(
@@ -115,10 +116,12 @@ async def aggregate_multivariate_lstm(mvts_data: TrainMVTS):
                              patience=mvts_data.patience
                             )
     try: 
-        
-        model.save(mvts_data.paths.model)
-  
-        with open(mvts_data.paths.scaler, 'wb') as fo:
+        path_to_model = os.path.join('data', mvts_data.paths.model)
+        model.save(path_to_model)
+
+
+        path_to_scaler = os.path.join('data', mvts_data.paths.scaler)
+        with open(path_to_scaler, 'wb') as fo:
             joblib.dump(scaler, fo)  
             
         return {"dump_status": "model is saved successfully"}
@@ -203,7 +206,8 @@ async def train_multivariate_var(mvts_data: TrainVAR):
     
     # save var results
     try: 
-        with open(mvts_data.paths.model, 'wb') as fo:
+        path_to_model = os.path.join('data', mvts_data.paths.model)
+        with open(path_to_model, 'wb') as fo:
             joblib.dump(var_result, fo)   
             
         return {"dump_status": "model is saved successfully",
