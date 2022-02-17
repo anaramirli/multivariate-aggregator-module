@@ -135,9 +135,12 @@ async def aggregate_multivariate_lstm(mvts_data: AggregatedMVTS):
     
     
     # load model
-    model = keras.models.load_model(mvts_data.paths.model)
+    path_to_model = os.path.join('data', mvts_data.paths.model)
+    model = keras.models.load_model(path_to_model)
+
     # get scaler
-    scaler = joblib.load(mvts_data.paths.scaler)
+    path_to_scaler = os.path.join('data', mvts_data.paths.scaler)
+    scaler = joblib.load(path_to_scaler)
     
     # get data
     test_x = pd.DataFrame.from_dict(mvts_data.test_data.data)
@@ -228,7 +231,8 @@ async def aggregate_multivariate_var(mvts_data: TestVAR):
     test_data.index=pd.to_datetime(test_data.index, unit='ms')
     
     # load var_result
-    var_result = joblib.load(mvts_data.paths.model)
+    path_to_model = os.path.join('data', mvts_data.paths.model)
+    var_result = joblib.load(path_to_model)
     
     # compute train t2 metric
     residuals_mean = var_result.resid.values.mean(axis=0)
