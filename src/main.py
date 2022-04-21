@@ -3,7 +3,7 @@
 __version__ = '1.0.0'
 
 from typing import Dict, List
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
 from .core.algorithms import normalizer, reshaper, lstm_model, predictor, lstm_fit_model, lstm_claculate_loss, gauss_threshold, vector_aggregator
@@ -22,7 +22,7 @@ import time
 import numpy as np
 import pandas as pd
 import os
-
+import shutil
 
 app = FastAPI(
     title='Multivariate Aggregator module.',
@@ -87,7 +87,7 @@ class AggregatedPCA(BaseModel):
 class AggregatedOut(BaseModel):
     '''Aggregated Score'''
     out: List[float]
-        
+
 
 @app.post('/multivariate-lstm-train')
 async def aggregate_multivariate_lstm(mvts_data: TrainMVTS):
@@ -288,3 +288,16 @@ async def aggregate_multivariate_pca(mvts_data: AggregatedPCA):
 
     return AggregatedOut(out=pca_reconstruction_error)
 
+
+@app.post('/remove-model')
+async def remove_models(paths_to_models: ModelPath):
+    """Remove models locally stored in container"""
+    model_path = os.path.join('data', paths_to_models.model)
+    scaler_path = os.path.join('data', paths_to_models.scaler)
+
+    try:
+        os.remove(scaler_path)
+        shutil.rmtree(model_path)
+        return {'message': 'ok'}
+    except:
+        raise HTTPException(500, detail='Error')
