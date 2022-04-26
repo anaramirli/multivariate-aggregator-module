@@ -6,19 +6,17 @@ from typing import Dict, List
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
-from .core.algorithms import lstm_model, lstm_fit_model
+from .core.algorithms import lstm_model
 
 from adtk.transformer import PcaReconstructionError
 from adtk.data import validate_series
 from sklearn.preprocessing import MinMaxScaler
 import scipy.stats as stats
-from scipy.stats import multivariate_normal
 from statsmodels.tsa.vector_ar.var_model import VAR
 
 from tensorflow import keras
 import joblib
 
-import time
 import numpy as np
 import pandas as pd
 import os
