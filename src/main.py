@@ -23,6 +23,7 @@ import numpy as np
 import pandas as pd
 import os
 import shutil
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI(
     title='Multivariate Aggregator module.',
@@ -294,3 +295,26 @@ async def remove_models(paths_to_models: ModelPath):
         return {'message': 'ok'}
     except:
         raise HTTPException(500, detail='Error')
+
+
+# serve static files
+app.mount("/data", StaticFiles(directory="data/", html=True), name="model data")
+
+
+@app.post('/request-model-files')
+async def request_model_files(paths_to_models: ModelPath):
+    """Returns paths to <model>.zip and to <scaler>"""
+    model_path = os.path.join('data', paths_to_models.model)
+    scaler_path = os.path.join('data', paths_to_models.scaler)
+
+    try:
+
+        shutil.make_archive(model_path, 'zip', model_path)
+    except:
+        raise HTTPException(400, detail='Directory ' +
+                            paths_to_models.model + ' does not exist')
+
+    return {
+        'path_to_model_archive': model_path + '.zip',
+        'path_to_scalar': scaler_path
+    }
