@@ -237,13 +237,6 @@ async def aggregate_multivariate_var(mvts_data: TestVAR):
     residuals = (var_result.resid.values - residuals_mean) / residuals_std
     cov_residuals = np.linalg.inv(np.cov(residuals.T))
 
-    T = np.diag((residuals).dot(cov_residuals).dot(residuals.T))
-
-    # compute UCL for loaded var_result
-    m = var_result.nobs
-    p = var_result.resid.shape[-1]
-    alpha = 0.01
-
     pred = []
 
     # iterative prediction on test data
