@@ -311,3 +311,10 @@ async def request_model_files(paths_to_models: ModelPath):
         'path_to_model_archive': model_path + '.zip',
         'path_to_scalar': scaler_path
     }
+
+
+@app.get('/list-model-files')
+async def list_model_files():
+    """Returns list of files in data/. This list can be used to download served static files (not directories)."""
+    ls = os.listdir('data')
+    return {'files': ls}
