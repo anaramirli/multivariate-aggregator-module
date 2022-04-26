@@ -318,3 +318,19 @@ async def list_model_files():
     """Returns list of files in data/. This list can be used to download served static files (not directories)."""
     ls = os.listdir('data')
     return {'files': ls}
+
+
+@app.post('/remove-model-files')
+async def remove_model_files(list_file_system_entries: List):
+    """Remove files and directories in data/. Files or directories which do not exist are ignored"""
+    for file_system_entry in list_file_system_entries:
+        path_to_file_system_entry = os.path.join('data', file_system_entry)
+
+        if os.path.isfile(path_to_file_system_entry):
+            # file
+            os.remove(path_to_file_system_entry)
+        else:
+            # directory
+            shutil.rmtree(path_to_file_system_entry, ignore_errors=True)
+
+    return 'ok'
