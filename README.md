@@ -37,8 +37,8 @@ curl -X 'POST' \
   },
   
   "paths": {
-    "model": "data/keras_mvts_lstm.h5",
-    "scaler": "data/mvts_scaler.gz"
+    "model": "keras_mvts_lstm.h5",
+    "scaler": "mvts_scaler.gz"
   },
   "activation": "relu",
   "optimizer": "adam",
@@ -78,8 +78,8 @@ curl -X 'POST' \
 		}
   },
   "paths": {
-    "model": "data/keras_mvts_lstm.h5",
-    "scaler": "data/mvts_scaler.gz"
+    "model": "keras_mvts_lstm.h5",
+    "scaler": "mvts_scaler.gz"
   }
 }'
 ```
@@ -149,7 +149,7 @@ curl -X 'POST' \
 	}
   },
   "paths": {
-    "model": "data/mvts_var.joblib",
+    "model": "mvts_var.joblib",
     "scaler": ""
   },
   "order": 3
@@ -181,7 +181,7 @@ curl -X 'POST' \
 	}
   },
   "paths": {
-    "model": "data/mvts_var.joblib",
+    "model": "mvts_var.joblib",
     "scaler": ""
   },
   "order": 3
