@@ -13,4 +13,4 @@ ADD src /app/src
 RUN mkdir /app/data
 ENV PATH=/root/.local/bin:$PATH
 EXPOSE 8080
-ENTRYPOINT uvicorn src.main:app --reload --host 0.0.0.0 --port 6060 
+ENTRYPOINT uvicorn src.main:app --reload --host 0.0.0.0 --port 8080 
