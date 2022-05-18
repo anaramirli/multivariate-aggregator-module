@@ -1,39 +1,51 @@
 """Test the webserver built with FastAPI"""
 
+
+import sys
+import os
 from fastapi.testclient import TestClient
-from .. import main
+
+sys.path.append("..")
+from ..main import app
+client = TestClient(app)
 
 
-client = TestClient(main.app)
+# from .. import main
+# client = TestClient(main.app)
 
+
+
+
+### Test LSTM auto-encoder
 
 def test_multivariate_lstm_train():
 
     response = client.post(
         '/multivariate-lstm-train',
         json={
-		  "train_data": {
-			"data": {
-            "A1": [601.929 , 587.4339, 590.4059, 596.6575, 582.4339, 585.8266, 597.0676, 584.5786, 583.95  , 595.0085],
-            "A2": [650.8372, 650.8372, 650.8372, 650.309 , 650.309 , 649.7221, 649.1147, 649.6167, 649.6167, 649.6167],
-            "A3": [636.3697, 636.3697, 636.3697, 636.3697, 636.3697, 636.3697, 636.3697, 636.3697, 636.3697, 636.3697],
-            "A4": [ 71.1788,  71.1788,  71.4192,  70.8146,  71.2311,  70.9744, 70.9744,  71.1484,  71.9672,  71.509 ],
-            "A5": [ 36.9295,  36.9295,  37.1119,  36.722 ,  36.97  ,  36.8511, 36.8511,  36.9359,  37.4204,  37.1334]
-			}
-		  },
-		  "paths": {
-			"model": "../trained models/lstm/model",
-			"scaler": "../trained models/lstm/scaler/scaler.gz"
-		  },
-		  "activation": "relu",
-		  "optimizer": "adam",
-		  "loss": "mae",
-		  "nb_epochs": 10,
-		  "batch_size": 64,
-		  "validation_split": 0.15,
-		  "initial_embeding_dim": 128,
-		  "patience": 1
-		}
+      "train_data": {
+        "data": {
+        "A1": [601.929 , 587.4339, 590.4059, 596.6575, 582.4339, 585.8266, 597.0676, 584.5786, 583.95  , 595.0085],
+        "A2": [650.8372, 650.8372, 650.8372, 650.309 , 650.309 , 649.7221, 649.1147, 649.6167, 649.6167, 649.6167],
+        "A3": [636.3697, 636.3697, 636.3697, 636.3697, 636.3697, 636.3697, 636.3697, 636.3697, 636.3697, 636.3697],
+        "A4": [ 71.1788,  71.1788,  71.4192,  70.8146,  71.2311,  70.9744, 70.9744,  71.1484,  71.9672,  71.509 ],
+        "A5": [ 36.9295,  36.9295,  37.1119,  36.722 ,  36.97  ,  36.8511, 36.8511,  36.9359,  37.4204,  37.1334]
+        }
+      },
+      
+      "paths": {
+        "model": "keras_mvts_lstm.h5",
+        "scaler": "mvts_scaler.gz"
+      },
+      "activation": "relu",
+      "optimizer": "adam",
+      "loss": "mae",
+      "nb_epochs": 10,
+      "batch_size": 64,
+      "validation_split": 0.15,
+      "initial_embeding_dim": 128,
+      "patience": 1
+    }
     )
 
     assert response.status_code == 200
@@ -46,25 +58,27 @@ def test_aggregate_multivariate_lstm_score():
     response = client.post(
         '/aggregate-multivariate-lstm-score',
         json= {
-          "test_data": {
-            "data": {
-            "A1": [580.7722, 592.1779, 587.5173, 583.7109, 594.7249, 604.5849, 611.5132, 616.7466, 608.9669, 597.9345],
-            "A2": [649.4124, 649.4124, 649.4124, 650.1096, 651.0769, 651.632 , 652.3653, 652.3653, 652.3653, 652.7337],
-            "A3": [636.3428, 636.3428, 636.3428, 635.6159, 635.6159, 635.9999, 635.9999, 635.9999, 636.6101, 636.6101],
-            "A4": [ 71.9601,  71.9601,  72.342 ,  73.5115,  74.2349,  73.8276, 73.5101,  73.2902,  72.4169,  72.7627],
-            "A5": [ 37.4148,  37.4148,  37.5577,  38.3091,  38.7071,  38.4878, 38.3124,  38.1843,  37.69  ,  37.8794]
-			}
-          },
-          "paths": {
-            "model": "../trained models/lstm/model",
-            "scaler": "../trained models/lstm/scaler/scaler.gz"
+        "test_data": {
+          "data": {
+                  "A1": [580.7722, 592.1779, 587.5173, 583.7109, 594.7249, 604.5849, 611.5132, 616.7466, 608.9669, 597.9345],
+                  "A2": [649.4124, 649.4124, 649.4124, 650.1096, 651.0769, 651.632 , 652.3653, 652.3653, 652.3653, 652.7337],
+                  "A3": [636.3428, 636.3428, 636.3428, 635.6159, 635.6159, 635.9999, 635.9999, 635.9999, 636.6101, 636.6101],
+                  "A4": [ 71.9601,  71.9601,  72.342 ,  73.5115,  74.2349,  73.8276, 73.5101,  73.2902,  72.4169,  72.7627],
+                  "A5": [ 37.4148,  37.4148,  37.5577,  38.3091,  38.7071,  38.4878, 38.3124,  38.1843,  37.69  ,  37.8794]
           }
-        }     
+        },
+        "paths": {
+          "model": "keras_mvts_lstm.h5",
+          "scaler": "mvts_scaler.gz"
+        }
+      }     
     )
+
 
     assert response.status_code == 200
     
-    
+
+### Test Vector Autoregression (VAR)
     
 def test_best_multivariate_var_order():
     
@@ -85,10 +99,13 @@ def test_best_multivariate_var_order():
         }     
     )
 
+    
     assert response.status_code == 200
     assert response.json() == {
 		  "best_order": 3
 		}
+    
+    
     
     
 def test_train_multivariate_var():
@@ -107,7 +124,7 @@ def test_train_multivariate_var():
           },
             
           "paths": {
-            "model": "../trained models/var/var_result.joblib",
+            "model": "mvts_var.joblib",
             "scaler": ""
           },
           "order": 3
@@ -115,10 +132,6 @@ def test_train_multivariate_var():
     )
 
     assert response.status_code == 200
-    assert response.json() == {
-			"dump_status": "model is saved successfully",
-			"UCL": 370.6116859955349
-		}
 		
 def test_aggregate_multivariate_var():
    
@@ -135,7 +148,7 @@ def test_aggregate_multivariate_var():
 			}
 		  },
 		  "paths": {
-			"model": "../trained models/var/var_result.joblib",
+			"model": "mvts_var.joblib",
 			"scaler": ""
 		  },
 		  "order": 3
@@ -143,20 +156,9 @@ def test_aggregate_multivariate_var():
     )
 
     assert response.status_code == 200
-    assert response.json() == {
-          "out": [
-            3.5167876260029486e+28,
-            3.192017532950293e+28,
-            7.837936344944434e+28,
-            2.4636610520425816e+29,
-            1.663637488961949e+28,
-            1.558962186880391e+28,
-            2.952890424647399e+28,
-            2.5090219198833513e+28
-          ]
-        }
     
-    
+### Test PCA
+
 def test_aggregate_multivariate_pca():
    
     response = client.post(
@@ -176,20 +178,5 @@ def test_aggregate_multivariate_pca():
     )
 
     assert response.status_code == 200
-    assert response.json() == {
-          "out": [
-            0.435516844700798,
-            107.34623817837938,
-            0.1723554997465683,
-            39.66345760703956,
-            184.60554329889254,
-            1.683081091641335,
-            68.56331068453335,
-            217.45358186059062,
-            1.3691178317147221,
-            91.41066434297306,
-            4.4618440730474624
-          ]
-        }
 
 

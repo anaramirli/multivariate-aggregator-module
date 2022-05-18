@@ -35,9 +35,10 @@ curl -X 'POST' \
 		"A5": [ 36.9295,  36.9295,  37.1119,  36.722 ,  36.97  ,  36.8511, 36.8511,  36.9359,  37.4204,  37.1334]
 		}
   },
+  
   "paths": {
-    "model": "src/trained models/lstm/model",
-    "scaler": "src/trained models/lstm/scaler/scaler.gz"
+    "model": "data/keras_mvts_lstm.h5",
+    "scaler": "data/mvts_scaler.gz"
   },
   "activation": "relu",
   "optimizer": "adam",
@@ -49,6 +50,8 @@ curl -X 'POST' \
   "patience": 1
 }'
 ```
+
+
 
 #### Response Body
 ```js
@@ -75,8 +78,8 @@ curl -X 'POST' \
 		}
   },
   "paths": {
-    "model": "src/trained models/lstm/model",
-    "scaler": "src/trained models/lstm/scaler/scaler.gz"
+    "model": "data/keras_mvts_lstm.h5",
+    "scaler": "data/mvts_scaler.gz"
   }
 }'
 ```
@@ -84,16 +87,16 @@ curl -X 'POST' \
 ```js
 {
   "out": [
-    0.4473551023156773,
-    0.5246782198868474,
-    0.5840548551021769,
-    1.1894471926386436,
-    1.6542528848245126,
-    1.6095836563318535,
-    1.6604827630411783,
-    1.6393310930729599,
-    1.2404790148631542,
-    1.2843145189487302
+    0.449440516570948,
+    0.525055252356107,
+    0.5844318879905316,
+    1.1898242258529614,
+    1.6546299190632852,
+    1.6099606920840253,
+    1.6608597985372362,
+    1.6397081285457347,
+    1.241337729358707,
+    1.28517323311832
   ]
 }
 ```
@@ -146,7 +149,7 @@ curl -X 'POST' \
 	}
   },
   "paths": {
-    "model": "src/trained models/var/var_result.joblib",
+    "model": "data/mvts_var.joblib",
     "scaler": ""
   },
   "order": 3
@@ -178,7 +181,7 @@ curl -X 'POST' \
 	}
   },
   "paths": {
-    "model": "src/trained models/var/var_result.joblib",
+    "model": "data/mvts_var.joblib",
     "scaler": ""
   },
   "order": 3
