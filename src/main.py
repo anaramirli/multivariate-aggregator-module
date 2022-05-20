@@ -300,7 +300,6 @@ async def remove_models(paths_to_models: ModelPath):
 
 # serve static files
 app.mount("/data", StaticFiles(directory="data/", html=True), name="model data")
-# app.mount("/data", StaticFiles(directory="E:/spaicer/data/", html=True), name="model data")
 
 
 
