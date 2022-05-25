@@ -10,6 +10,13 @@ $ docker build . -t multivariate-aggregator
 $ docker run -p 8080:8080 multivariate-aggregator
 ```
 
+## Unit Tests
+Note: Make sure that test requirements are met (see src/tests/requirements.txt)
+```sh
+$ cd src/tests
+$ pytest
+```
+
 ## Documentation
 * Swagger: http://localhost:8080/documentation
 * ReDoc: http://localhost:8080/redoc

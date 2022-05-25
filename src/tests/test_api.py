@@ -1,20 +1,14 @@
 """Test the webserver built with FastAPI"""
 
 
-import sys
-import os
 from fastapi.testclient import TestClient
+from .. import main
+import pytest
+import json
 
-sys.path.append("..")
-from ..main import app
-client = TestClient(app)
+client = TestClient(main.app)
 
-
-# from .. import main
-# client = TestClient(main.app)
-
-
-
+pytest.model_files = None
 
 ### Test LSTM auto-encoder
 
@@ -179,4 +173,26 @@ def test_aggregate_multivariate_pca():
 
     assert response.status_code == 200
 
+
+
+# returns list of files in data/. 
+def test_list_files():
+
+    pytest.model_files = None
+
+    response = client.get('/list-model-files')
+    assert response.status_code==200, "Response Fail Reason: {}\n".format(response.reason)
+
+    try:
+        response_json = json.loads(response.text)
+        pytest.model_files = response_json['files']
+    except:
+        assert False, "Key Error in the response data"
+
+
+# remove files and directories in data/
+def test_remove_files():
+
+    response = client.post('/remove-model-files', json.dumps(pytest.model_files) )
+    assert response.status_code==200, "Response Fail Reason: {}\n".format(response.reason)
 
