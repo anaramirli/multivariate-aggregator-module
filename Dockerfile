@@ -1,4 +1,4 @@
-FROM python:3.9-slim
+FROM python:3.9.13-bullseye
 
 RUN apt-get update \
 && apt-get upgrade -y \
@@ -7,7 +7,8 @@ RUN apt-get update \
 
 WORKDIR /app
 ADD requirements.txt /app/requirements.txt
-RUN pip install --user -r /app/requirements.txt
+RUN pip install --upgrade pip \
+&& pip install --user -r /app/requirements.txt
 
 ADD src /app/src
 ENV PATH=/root/.local/bin:$PATH
