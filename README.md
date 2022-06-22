@@ -11,10 +11,14 @@ $ docker run -p 8080:8080 multivariate-aggregator
 ```
 
 ## Unit Tests
-Note: Make sure that test requirements are met (see src/tests/requirements.txt)
+Run with python 3.9.12+(>=12)
 ```sh
+$ python3.9 -m venv src/tests
+$ source bin/activate
+$ python -m pip install --upgrade pip
+$ python -m pip install -r requirements.txt
 $ cd src/tests
-$ pytest
+$ pytest test_api.py
 ```
 
 ## Documentation
