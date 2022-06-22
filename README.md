@@ -18,6 +18,7 @@ $ source bin/activate
 $ python -m pip install --upgrade pip
 $ python -m pip install -r requirements.txt
 $ cd src/tests
+$ mkdir -p data
 $ pytest test_api.py
 ```
 
