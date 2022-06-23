@@ -13,7 +13,7 @@ $ docker run -p 8080:8080 multivariate-aggregator
 ## Unit Tests
 Run with python 3.9.12+(>=12)
 ```sh
-$ python3.9 -m venv src/tests
+$ python3.9 -m venv .
 $ source bin/activate
 $ python -m pip install --upgrade pip
 $ python -m pip install -r requirements.txt
