@@ -6,7 +6,7 @@ from typing import Dict, List
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
-from .core.algorithms import lstm_model
+from .core.algorithms import lstm_model, lstm_fit_model
 
 from adtk.transformer import PcaReconstructionError
 from adtk.data import validate_series
@@ -93,7 +93,7 @@ class AggregatedOut(BaseModel):
 
 
 @app.post('/multivariate-lstm-train')
-async def aggregate_multivariate_lstm(mvts_data: TrainMVTS):
+async def multivariate_lstm_train(mvts_data: TrainMVTS):
     """Apply LSTM reconstruction error to aggregate the Multivariate data"""
 
     train_x = pd.DataFrame.from_dict(mvts_data.train_data.data)
@@ -106,10 +106,20 @@ async def aggregate_multivariate_lstm(mvts_data: TrainMVTS):
     # reshape data
     train_x = train_x.reshape(train_x.shape[0], 1, train_x.shape[1])
 
-    model = lstm_model(train_x,
-                       mvts_data.initial_embeding_dim,
-                       mvts_data.loss
-                       )
+    model = lstm_model(
+        train_x,
+        mvts_data.initial_embeding_dim,
+        mvts_data.loss
+        )
+	
+    model = lstm_fit_model(
+        model = model,
+        x_train = train_x,
+        nb_epochs = mvts_data.nb_epochs,
+        batch_size = mvts_data.batch_size,
+        validation_split=mvts_data.validation_split,
+        patience=mvts_data.patience
+        )
 
     try:
         path_to_model = os.path.join('data', mvts_data.paths.model)
@@ -125,7 +135,7 @@ async def aggregate_multivariate_lstm(mvts_data: TrainMVTS):
 
 
 @app.post('/aggregate-multivariate-lstm-score', response_model=AggregatedOut)
-async def aggregate_multivariate_lstm(mvts_data: AggregatedMVTS):
+async def aggregate_multivariate_lstm_score(mvts_data: AggregatedMVTS):
     """Apply LSTM reconstruction error to aggregate the Multivariate data"""
 
     # load model
@@ -292,21 +302,15 @@ async def remove_models(paths_to_models: ModelPath):
 app.mount("/data", StaticFiles(directory="data/", html=True), name="model data")
 
 
+
 @app.post('/request-model-files')
 async def request_model_files(paths_to_models: ModelPath):
-    """Returns paths to <model>.zip and to <scaler>"""
+    """Returns paths <model> and to <scaler>"""
     model_path = os.path.join('data', paths_to_models.model)
     scaler_path = os.path.join('data', paths_to_models.scaler)
 
-    try:
-
-        shutil.make_archive(model_path, 'zip', model_path)
-    except:
-        raise HTTPException(400, detail='Directory ' +
-                            paths_to_models.model + ' does not exist')
-
     return {
-        'path_to_model_archive': model_path + '.zip',
+        'path_to_model_archive': model_path,
         'path_to_scalar': scaler_path
     }
 

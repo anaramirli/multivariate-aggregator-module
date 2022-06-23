@@ -125,9 +125,9 @@ def lstm_fit_model(model, x_train, nb_epochs = 10, batch_size = 31, validation_s
                                 
     callback = EarlyStopping(monitor='val_loss', patience=patience, restore_best_weights=True)
     
-    history = model.fit(x_train, x_train, epochs=nb_epochs, batch_size=batch_size, validation_split=validation_split, callbacks=[callback]).history
+    model.fit(x_train, x_train, epochs=nb_epochs, batch_size=batch_size, validation_split=validation_split, callbacks=[callback])
 
-    return history
+    return model
 
 
 def predictor(model, data, x_data):
